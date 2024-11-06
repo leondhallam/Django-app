@@ -1,4 +1,4 @@
-from . import views
+from itreporting import views
 from django.urls import path
 
 app_name = 'itreporting'

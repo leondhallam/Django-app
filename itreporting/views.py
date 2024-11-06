@@ -9,3 +9,4 @@ def contact(request):
 
 def about(request):
     return render(request, 'itreporting/about.html', {'title': 'About Us'})
+
