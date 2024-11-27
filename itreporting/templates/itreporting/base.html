@@ -41,10 +41,11 @@
                         <button type="submit" class="nav-item nav-link"
                         style="background:none; border:none; cursor:pointer;">Logout</button>
                         </form>
+                        <a class="nav-tem nav-link" href="{% url 'profile' %}">Profile</a>
                         {% else %}
                         <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
                         <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
-                        <a class="nav-tem nav-link" href="{% url 'profile' %}">Profile</a>
+                        <!-- <a class="nav-tem nav-link" href="{% url 'profile' %}">Profile</a> -->
                         {% endif %}
                     </div>
                 </div>
