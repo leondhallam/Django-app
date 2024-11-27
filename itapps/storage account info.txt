@@ -1,0 +1,6 @@
+Storage account name:
+djangostorageacc
+
+Key1 key value:
+Hm/xERT6Q5PNU3WiJQCHFUeLgXmjfZhD7dGlEbYGa6rtbGkwGS6vQd7PPE5hqrtVX3dTUicbqh0p+ASt8eqV+A==
+

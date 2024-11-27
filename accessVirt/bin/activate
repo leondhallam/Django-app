@@ -67,3 +67,12 @@ fi
 if [ -n "${BASH:-}" -o -n "${ZSH_VERSION:-}" ] ; then
     hash -r 2> /dev/null
 fi
+
+export AZURE_DB_NAME='deployment'
+export AZURE_DB_HOST='c2012047.mysql.database.azure.com'
+export AZURE_DB_PORT='3306'
+export AZURE_DB_USER='c2012047'
+export AZURE_DB_PASSWORD='AzurePass*987'
+
+export AZURE_SA_NAME="djangostorageacc"
+export AZURE_SA_KEY="Hm/xERT6Q5PNU3WiJQCHFUeLgXmjfZhD7dGlEbYGa6rtbGkwGS6vQd7PPE5hqrtVX3dTUicbqh0p+ASt8eqV+A=="

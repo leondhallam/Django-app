@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,8 +80,12 @@ WSGI_APPLICATION = 'itapps.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ['AZURE_DB_NAME'],
+        'HOST': os.environ['AZURE_DB_HOST'],
+        'PORT': os.environ['AZURE_DB_PORT'],
+        'USER': os.environ['AZURE_DB_USER'],
+        'PASSWORD': os.environ['AZURE_DB_PASSWORD'],
     }
 }
 
@@ -119,13 +124,39 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
+
+# MEDIA_ROOT = BASE_DIR / 'media'
+# MEDIA_URL = '/media/'
+
+AZURE_SA_NAME = os.environ['AZURE_SA_NAME']
+AZURE_SA_KEY = os.environ['AZURE_SA_KEY']
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.azure_storage.AzureStorage",
+        "OPTIONS": {
+            "account_name": AZURE_SA_NAME,
+            "account_key": AZURE_SA_KEY,
+            "azure_container": "media",
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "storages.backends.azure_storage.AzureStorage",
+        "OPTIONS": {
+            "account_name": AZURE_SA_NAME,
+            "account_key": AZURE_SA_KEY,
+            "azure_container": "static",
+        },
+    },
+}
+
+STATIC_URL = f'https://{AZURE_SA_NAME}.blob.core.windows.net/static/'
+MEDIA_URL = f'https://{AZURE_SA_NAME}.blob.core.windows.net/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap4'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = "itreporting:home"

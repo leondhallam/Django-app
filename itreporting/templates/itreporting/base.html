@@ -29,14 +29,14 @@
                     <div class="navbar-nav mr-auto">
                         <a class="nav-item nav-link" href="{% url 'itreporting:home' %}">Home</a>
                         <a class="nav-item nav-link" href="{% url 'itreporting:about' %}">About</a>
-                        <a class="nav-item nav-link" href="#">Report</a>
+                        <a class="nav-item nav-link" href="{% url 'itreporting:report' %}">Report</a>
                         <a class="nav-item nav-link" href="{% url 'itreporting:contact' %}">Contact</a>
                     </div>
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
                         {% if user.is_authenticated %}
-                        <form method="post" id="frm_logout" action="{% url 'logout' %}"
-                        style="display:inline;">
+                        <a class="nav-item nav-link" href="{% url 'itreporting:issue-create' %}">Report New Issue</a>
+                        <form method="post" id="frm_logout" action="{% url 'logout' %}" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit" class="nav-item nav-link"
                         style="background:none; border:none; cursor:pointer;">Logout</button>
