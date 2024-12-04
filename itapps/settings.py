@@ -31,7 +31,7 @@ DEBUG = WEBSITE_HOSTNAME == None
 
 
 if DEBUG:
-    ALLOWED_HOSTS = [f'c2012047-eff9bkbga8fbcehr.uksouth-01.azurewebsites.net']
+    ALLOWED_HOSTS = []
 else:
     ALLOWED_HOSTS = [WEBSITE_HOSTNAME]
     CSRF_TRUSTED_ORIGINS = [f'https://{WEBSITE_HOSTNAME}']
