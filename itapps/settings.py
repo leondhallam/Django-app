@@ -26,8 +26,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'r4nd0mv4lu3')
 WEBSITE_HOSTNAME = os.environ.get('WEBSITE_HOSTNAME', None)
 DEBUG = WEBSITE_HOSTNAME == None
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
+# SECURITY WARNING: don't run with debug turned on in production
+
 
 if DEBUG:
     ALLOWED_HOSTS = [f'c2012047-eff9bkbga8fbcehr.uksouth-01.azurewebsites.net']
