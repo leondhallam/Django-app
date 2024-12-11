@@ -17,12 +17,12 @@ def home(request):
     for city in cities:
         city_weather = requests.get(url.format(city[0], city[1], api_key)).json() # Request the API data and convert the JSON to Python data types
 
-    weather = {
-        'city': city_weather['name'] + ', ' + city_weather['sys']['country'],
-        'temperature': city_weather['main']['temp'],
-        'description': city_weather['weather'][0]['description']
-    }   
-    weather_data.append(weather) # Add the data for the current city into our list
+        weather = {
+            'city': city_weather['name'] + ', ' + city_weather['sys']['country'],
+            'temperature': city_weather['main']['temp'],
+            'description': city_weather['weather'][0]['description']
+        }   
+        weather_data.append(weather) # Add the data for the current city into our list
     return render(request, 'itreporting/home.html', {'title': 'Homepage', 'weather_data': weather_data})
 
 
