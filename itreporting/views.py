@@ -5,9 +5,27 @@ from django.urls import reverse_lazy
 from .models import Issue
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import DeleteView
+import requests
 
 def home(request):
-    return render(request, 'itreporting/home.html', {'title': 'Welcome'})
+
+    url = 'https://api.openweathermap.org/data/2.5/weather?q={},{}&units=metric&appid={}'
+    cities = [('Sheffield', 'UK'), ('Melaka', 'Malaysia'), ('Bandung', 'Indonesia')]
+    weather_data = []
+    api_key = 'd3da844b10cd6d5411c2c9e0a694e8e7'
+
+    for city in cities:
+        city_weather = requests.get(url.format(city[0], city[1], api_key)).json() # Request the API data and convert the JSON to Python data types
+
+    weather = {
+        'city': city_weather['name'] + ', ' + city_weather['sys']['country'],
+        'temperature': city_weather['main']['temp'],
+        'description': city_weather['weather'][0]['description']
+    }   
+    weather_data.append(weather) # Add the data for the current city into our list
+    return render(request, 'itreporting/home.html', {'title': 'Homepage', 'weather_data': weather_data})
+
+
 
 def contact(request):
     return render(request, 'itreporting/contact.html', {'title': 'Contact Us'})
