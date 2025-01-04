@@ -10,6 +10,6 @@ admin.site.register(Issue)
 
 @admin.register(ContactSubmission)
 class ContactSubmissionAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'submitted_at')  # Fields to display in the admin list view
-    search_fields = ('name', 'email')  # Add a search bar for easy filtering
-    list_filter = ('submitted_at',)  # Filter by submission date
+    list_display = ('name', 'email', 'subject', 'submitted_at')
+    search_fields = ('name', 'email', 'subject')
+    list_filter = ('submitted_at',)

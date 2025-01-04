@@ -37,6 +37,7 @@ def contact(request):
             ContactSubmission.objects.create(
                 name=form.cleaned_data['name'],
                 email=form.cleaned_data['email'],
+                subject=form.cleaned_data['subject'],
                 message=form.cleaned_data['message']
             )
             # Optionally, display a success message or redirect
