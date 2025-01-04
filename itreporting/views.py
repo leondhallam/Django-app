@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import DeleteView
 import requests
 from .forms import ContactForm
+from .models import ContactSubmission
 from django.core.mail import EmailMessage
 
 def home(request):
@@ -32,13 +33,19 @@ def contact(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            # Process form data (e.g., send an email, save to database, etc.)
-            # Add a success message or redirect as needed
+            # Save the submission to the database
+            ContactSubmission.objects.create(
+                name=form.cleaned_data['name'],
+                email=form.cleaned_data['email'],
+                message=form.cleaned_data['message']
+            )
+            # Optionally, display a success message or redirect
             return render(request, 'itreporting/contact.html', {'form': form, 'success': True})
     else:
-        form = ContactForm()  # Instantiate an empty form for GET requests
+        form = ContactForm()
 
     return render(request, 'itreporting/contact.html', {'form': form, 'title': 'Contact Us'})
+
 
 def about(request):
     return render(request, 'itreporting/about.html', {'title': 'About Us'})
