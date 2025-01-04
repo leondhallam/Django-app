@@ -67,7 +67,7 @@ ROOT_URLCONF = 'itapps.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -170,3 +170,13 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap4'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = "itreporting:home"
 LOGIN_URL = "login"
+
+# Looking to send emails in production? Check out our Email API/SMTP product!
+
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+
+EMAIL_HOST_USER = '3c006ca06ac2cb'
+
+EMAIL_HOST_PASSWORD = '********89da'
+
+EMAIL_PORT = '2525'

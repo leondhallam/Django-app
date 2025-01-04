@@ -2,6 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django import forms
+from django.core.validators import EmailValidator
 
 class Issue(models.Model):
     type = models.CharField(max_length=100, choices = [('Hardware', 'Hardware'), ('Software', 'Software')])
@@ -16,3 +18,10 @@ class Issue(models.Model):
     def get_absolute_url(self):
         return reverse('itreporting:issue-detail', kwargs = {'pk': self.pk})
 
+
+class Contact(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.CharField(validators=[EmailValidator()], max_length=100)
+    subject = models.CharField(max_length=100)
+    message = models.CharField(max_length=100)
+    address = models.CharField(max_length=100)

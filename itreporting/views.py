@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -6,6 +6,8 @@ from .models import Issue
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import DeleteView
 import requests
+from .forms import ContactForm
+from django.core.mail import EmailMessage
 
 def home(request):
 
@@ -26,9 +28,17 @@ def home(request):
     return render(request, 'itreporting/home.html', {'title': 'Homepage', 'weather_data': weather_data})
 
 
-
 def contact(request):
-    return render(request, 'itreporting/contact.html', {'title': 'Contact Us'})
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            # Process form data (e.g., send an email, save to database, etc.)
+            # Add a success message or redirect as needed
+            return render(request, 'itreporting/contact.html', {'form': form, 'success': True})
+    else:
+        form = ContactForm()  # Instantiate an empty form for GET requests
+
+    return render(request, 'itreporting/contact.html', {'form': form, 'title': 'Contact Us'})
 
 def about(request):
     return render(request, 'itreporting/about.html', {'title': 'About Us'})
@@ -72,3 +82,4 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         issue = self.get_object()
         return self.request.user == issue.author
+
