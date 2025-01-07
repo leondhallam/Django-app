@@ -34,18 +34,32 @@ def contact(request):
         form = ContactForm(request.POST)
         if form.is_valid():
             # Save the submission to the database
-            ContactSubmission.objects.create(
-                name=form.cleaned_data['name'],
-                email=form.cleaned_data['email'],
-                subject=form.cleaned_data['subject'],
-                message=form.cleaned_data['message']
-            )
-            # Optionally, display a success message or redirect
-            return render(request, 'itreporting/contact.html', {'form': form, 'success': True})
+            # ContactSubmission.objects.create(
+            #     name=form.cleaned_data['name'],
+            #     email=form.cleaned_data['email'],
+            #     subject=form.cleaned_data['subject'],
+            #     message=form.cleaned_data['message']
+            # )
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            # subject=form.cleaned_data['subject'],
+            message = form.cleaned_data['message']
+            EmailMessage(
+                'Contact Form Submission from {}'.format(name),
+                message,
+                'form-response@example.com',
+                ['test.mailtrap1234@gmail.com'],
+                [],
+                reply_to=[email]
+            ).send()
+        return HttpResponse('Success!')
     else:
         form = ContactForm()
 
     return render(request, 'itreporting/contact.html', {'form': form, 'title': 'Contact Us'})
+
+# def success(request):
+#     return HttpResponse('Success!')
 
 
 def about(request):

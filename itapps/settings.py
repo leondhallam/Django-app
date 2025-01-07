@@ -171,12 +171,30 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = "itreporting:home"
 LOGIN_URL = "login"
 
-# Looking to send emails in production? Check out our Email API/SMTP product!
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_DEBUG = True
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#         },
+#     },
+# }
 
-EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
 
-EMAIL_HOST_USER = '3c006ca06ac2cb'
+# SMTP information for emails from "Contact" page
+EMAIL_HOST = 'smtp-relay.brevo.com'
 
-EMAIL_HOST_PASSWORD = '********89da'
+EMAIL_HOST_USER = '82ffdd001@smtp-brevo.com'
 
-EMAIL_PORT = '2525'
+EMAIL_HOST_PASSWORD = '5fvJktDBQIZ81PxY'
+
+EMAIL_PORT = '587'
