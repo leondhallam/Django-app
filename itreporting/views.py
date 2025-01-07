@@ -10,6 +10,7 @@ from .forms import ContactForm
 from .models import ContactSubmission
 from django.core.mail import EmailMessage
 
+
 def home(request):
 
     url = 'https://api.openweathermap.org/data/2.5/weather?q={},{}&units=metric&appid={}'
@@ -42,17 +43,21 @@ def contact(request):
             # )
             name = form.cleaned_data['name']
             email = form.cleaned_data['email']
-            # subject=form.cleaned_data['subject'],
+            subject=form.cleaned_data['subject']
             message = form.cleaned_data['message']
+
+            email_subject = '{} - Contact Form Submission from {}'.format(subject, name)
+
             EmailMessage(
-                'Contact Form Submission from {}'.format(name),
+                email_subject,
+                #'Contact Form Submission from {}'.format(name),
                 message,
                 'form-response@example.com',
-                ['test.mailtrap1234@gmail.com'],
+                ['c2012047@my.shu.ac.uk'],
                 [],
                 reply_to=[email]
             ).send()
-        return HttpResponse('Success!')
+            return HttpResponse('Success!')
     else:
         form = ContactForm()
 
