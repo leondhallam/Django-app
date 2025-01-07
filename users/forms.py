@@ -3,7 +3,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Profile
 from django.core.validators import EmailValidator
-from itreporting.models import Contact
+from itreporting.models import Student
+from datetime import datetime
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(label='Email address', help_text='Your SHU email address.')
@@ -22,7 +23,22 @@ class ProfileUpdateForm(forms.ModelForm):
         model = Profile
         fields = ['image']
 
-# class ContactForm(forms.ModelForm):
-#     class Meta:
-#         model = Contact
-#         fields = ['name', 'email', 'subject', 'message', 'address']
+class StudentRegistrationForm(forms.ModelForm):
+    date_of_birth = forms.DateField(
+        input_formats=['%d/%m/%Y'],  # Specify the required input format
+        widget=forms.TextInput(attrs={'placeholder': 'DD/MM/YYYY'}),  # Placeholder in the form field
+        help_text="Enter your date of birth in DD/MM/YYYY format."
+    )
+
+    class Meta:
+        model = Student
+        fields = ['date_of_birth', 'address', 'city_town', 'country', 'photo']
+
+    def clean_date_of_birth(self):
+        date_of_birth = self.cleaned_data.get('date_of_birth')
+        
+        # Additional validation (optional): Check if date of birth is in the past
+        if date_of_birth and date_of_birth > datetime.today().date():
+            raise forms.ValidationError("Date of birth cannot be in the future.")
+        
+        return date_of_birth

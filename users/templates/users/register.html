@@ -8,6 +8,15 @@
             <legend class="border-bottom mb-4">Student Registration Form</legend>
         {{ form | crispy }}
         </fieldset>
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">User Details</legend>
+            {{ user_form|crispy }}
+        </fieldset>
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Student Profile Details</legend>
+            {{ student_form|crispy }}
+        </fieldset>
         <div class="form-group">
             <button class="btn btn-outline-info" type="submit">Register</button>
         </div>

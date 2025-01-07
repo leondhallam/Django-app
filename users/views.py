@@ -3,20 +3,37 @@ from django.http import HttpResponse
 from django.contrib import messages
 from .forms import UserRegistrationForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
+from itreporting.models import Student
+from .forms import UserRegistrationForm, StudentRegistrationForm
+from django.contrib.auth.models import User
 
 def register(request):
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Your account has been created! Now you can login!')
+        user_form = UserRegistrationForm(request.POST)
+        student_form = StudentRegistrationForm(request.POST, request.FILES)
+        
+        if user_form.is_valid() and student_form.is_valid():
+            # Save the user
+            user = user_form.save()
+
+            # Create the associated Student profile
+            student = student_form.save(commit=False)
+            student.user = user
+            student.save()
+
+            messages.success(request, 'Your account has been created! Now you can log in.')
             return redirect('login')
         else:
-            messages.warning(request,'Unable to create account.')
+            messages.warning(request, 'Unable to create account. Please check the form.')
     else:
-        form = UserRegistrationForm()
-    return render(request, 'users/register.html', {'form':form, 'title':'Student Registration'})
+        user_form = UserRegistrationForm()
+        student_form = StudentRegistrationForm()
+
+    return render(request, 'users/register.html', {
+        'user_form': user_form,
+        'student_form': student_form,
+        'title': 'Student Registration'
+    })
 
 @login_required
 def profile(request):
@@ -30,8 +47,15 @@ def profile(request):
             messages.success(request, 'Your account has successfully updated!')
             return redirect('profile')
     else:
-        u_form = UserUpdateForm(instance = request.user)
-        p_form = ProfileUpdateForm(instance = request.user.profile)
-    context = {'u_form': u_form, 'p_form': p_form, 'title': 'Student Profile'}
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.user.profile)
+
+    context = {
+        'u_form': u_form,
+        'p_form': p_form,
+        'title': 'Student Profile',
+        'student': Student.objects.get(user=request.user)
+    }
+
     return render(request, 'users/profile.html', context)
 

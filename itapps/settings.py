@@ -134,8 +134,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AZURE_SA_NAME = os.environ['AZURE_SA_NAME']
 AZURE_SA_KEY = os.environ['AZURE_SA_KEY']
