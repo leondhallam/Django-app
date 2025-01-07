@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django import forms
 from django.core.validators import EmailValidator
+from django.contrib.auth.models import User, Group
 
 class Issue(models.Model):
     type = models.CharField(max_length=100, choices = [('Hardware', 'Hardware'), ('Software', 'Software')])
@@ -35,3 +36,40 @@ class ContactSubmission(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.email}) - {self.submitted_at}"
+
+# Module Model
+class Module(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    code = models.CharField(max_length=10, unique=True)
+    credit = models.PositiveIntegerField()
+    category = models.CharField(max_length=100)
+    description = models.TextField()
+    availability = models.BooleanField(default=True)  # True: Open, False: Closed
+    courses_allowed = models.ManyToManyField(Group, related_name='modules')  # Use Group to represent courses
+
+    def __str__(self):
+        return f"{self.name} ({self.code})"
+
+# Student Model
+class Student(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile')
+    date_of_birth = models.DateField()
+    address = models.TextField()
+    city_town = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    photo = models.ImageField(upload_to='student_photos/', null=True, blank=True)
+
+    def __str__(self):
+        return self.user.get_full_name() or self.user.username
+
+# Registration Model
+class Registration(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='registrations')
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name='registrations')
+    date_of_registration = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('student', 'module')  # Prevent duplicate registrations for the same module
+
+    def __str__(self):
+        return f"{self.student.user.username} -> {self.module.name}"
