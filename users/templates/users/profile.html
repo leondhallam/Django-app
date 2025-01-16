@@ -1,35 +1,37 @@
 {% extends 'itreporting/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="content-section">
-        <div class="media">
-            <p>
-                {% if user.student_profile.photo %}
-                <img class="rounded-circle-account-img" src="{{ user.student_profile.photo.url }}">
-                {% else %}
-                <img class="rounded-circle-account-img" src="/static/profile_pics/default.png">
-                {% endif %}
-            </p>
-            <div class="media-body">
-                <h2 class="account-heading">{{ user.first_name }} {{ user.last_name }}</h2>
-                <p class="text-secondary">Username: {{ user.username }}</p>
-                <p class="text-secondary">Email: {{ user.email }}</p>
-                <p class="text-secondary">Date of Birth: {{ user.student_profile.date_of_birth }}</p>
-                <p class="text-secondary">Address: {{ user.student_profile.address }}</p>
-                <p class="text-secondary">City/Town: {{ user.student_profile.city_town }}</p>
-                <p class="text-secondary">Country: {{ user.student_profile.country }}</p>
-            </div>
+<div class="content-section">
+    <h2 class="account-heading">{{ user.username }}</h2>
+    <p class="text-secondary">Email: {{ user.email }}</p>
+    <p class="text-secondary">Course: 
+        {% if user.groups.all %}
+            {{ user.groups.first.name }}
+        {% else %}
+            Not assigned
+        {% endif %}
+    </p>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Update Profile Details</legend>
+            {{ u_form|crispy }}
+            {{ p_form.date_of_birth.label_tag }}
+            {{ p_form.date_of_birth }}
+            {{ p_form.address.label_tag }}
+            {{ p_form.address }}
+            {{ p_form.city_town.label_tag }}
+            {{ p_form.city_town }}
+            {{ p_form.country.label_tag }}
+            {{ p_form.country }}
+            {{ p_form.photo.label_tag }}
+            {{ p_form.photo }}
+            {{ p_form.course.label_tag }}
+            {{ p_form.course }}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="submit">Update</button>
         </div>
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Update Profile Details</legend>
-                {{ u_form | crispy }}
-                {{ p_form | crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Update</button>
-            </div>
-        </form>
-    </div>
+    </form>
+</div>
 {% endblock content %}

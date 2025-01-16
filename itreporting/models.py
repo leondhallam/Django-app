@@ -52,15 +52,17 @@ class Module(models.Model):
 
 # Student Model
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile') # Linking the User and Student models
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile')
     date_of_birth = models.DateField()
-    address = models.TextField()
+    address = models.CharField(max_length=255)
     city_town = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
-    photo = models.ImageField(upload_to='student_photos/', null=True, blank=True)
+    photo = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
 
     def __str__(self):
-        return self.user.get_full_name() or self.user.username
+        groups = self.user.groups.all()
+        course = groups.first().name if groups else "No course"
+        return f'{self.user.username} ({course})'
 
 # Registration Model
 class Registration(models.Model):

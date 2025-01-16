@@ -2,12 +2,8 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="content-section">
-    <form method="POST">
-        {% csrf_token %}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Student Registration Form</legend>
-        {{ form | crispy }}
-        </fieldset>
+    <h2>Register as a Student</h2>
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">User Details</legend>
@@ -15,16 +11,32 @@
         </fieldset>
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Student Profile Details</legend>
-            {{ student_form|crispy }}
+            {{ student_form.date_of_birth.label_tag }}
+            {{ student_form.date_of_birth }}
+            <small class="form-text text-muted">{{ student_form.date_of_birth.help_text }}</small>
+            {% for error in student_form.date_of_birth.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+
+            {{ student_form.address.label_tag }}
+            {{ student_form.address }}
+            {{ student_form.city_town.label_tag }}
+            {{ student_form.city_town }}
+            {{ student_form.country.label_tag }}
+            {{ student_form.country }}
+            {{ student_form.photo.label_tag }}
+            {{ student_form.photo }}
+
+            {{ student_form.course.label_tag }}
+            {{ student_form.course }}
+            <small class="form-text text-muted">{{ student_form.course.help_text }}</small>
+            {% for error in student_form.course.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </fieldset>
         <div class="form-group">
             <button class="btn btn-outline-info" type="submit">Register</button>
         </div>
     </form>
-    <div class="border-top pt-3">
-        <small class="text-muted">
-            Already Registered? <a class="ml-2" href="#">Login</a>
-        </small>
-    </div>
 </div>
 {% endblock content %}

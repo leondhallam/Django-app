@@ -13,13 +13,15 @@ def register(request):
         student_form = StudentRegistrationForm(request.POST, request.FILES)
         
         if user_form.is_valid() and student_form.is_valid():
-            # Save the user
             user = user_form.save()
-
-            # Create the associated Student profile
+            
             student = student_form.save(commit=False)
             student.user = user
             student.save()
+
+            course = student_form.cleaned_data.get('course')
+            if course:
+                user.groups.add(course)
 
             messages.success(request, 'Your account has been created! Now you can log in.')
             return redirect('login')
@@ -37,24 +39,24 @@ def register(request):
 
 @login_required
 def profile(request):
-    print("Profile")
-    if request.method == "POST":
+    if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        p_form = StudentRegistrationForm(request.POST, request.FILES, instance=request.user.student_profile)
+        p_form.fields['course'].initial = request.user.groups.first()
+
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
-            p_form.save()
-            messages.success(request, 'Your account has successfully updated!')
+            p_form.save(user=request.user)
+            messages.success(request, f'Your profile has been updated!')
             return redirect('profile')
     else:
         u_form = UserUpdateForm(instance=request.user)
-        p_form = ProfileUpdateForm(instance=request.user.profile)
+        p_form = StudentRegistrationForm(instance=request.user.student_profile)
+        p_form.fields['course'].initial = request.user.groups.first()
 
     context = {
         'u_form': u_form,
         'p_form': p_form,
-        'title': 'Student Profile',
-        'student': Student.objects.get(user=request.user)
     }
 
     return render(request, 'users/profile.html', context)

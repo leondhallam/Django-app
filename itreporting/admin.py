@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Issue
 from .models import ContactSubmission
-# from .models import Contact
+from .models import Student
 
 # Register your models here.
 admin.site.register(Issue)
@@ -24,11 +24,16 @@ class ModuleAdmin(admin.ModelAdmin):
     search_fields = ('name', 'code')
 
 # Student model
-@admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('user', 'date_of_birth', 'city_town', 'country')
-    search_fields = ('user__username', 'user__first_name', 'user__last_name')
-    list_filter = ('country',)
+    list_display = ('user', 'get_course', 'date_of_birth', 'address', 'city_town', 'country')
+    search_fields = ('user__username', 'user__email', 'address', 'city_town', 'country')
+
+    def get_course(self, obj):
+        groups = obj.user.groups.all()
+        return groups.first().name if groups else "Not assigned"
+    get_course.short_description = "Course"
+
+admin.site.register(Student, StudentAdmin)
 
 # Registration model
 @admin.register(Registration)
