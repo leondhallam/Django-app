@@ -7,40 +7,48 @@ from itreporting.models import Student
 from .forms import UserRegistrationForm, StudentRegistrationForm
 from django.contrib.auth.models import User
 
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
+from .forms import StudentRegistrationForm
+from django.contrib import messages
+
 def register(request):
     if request.method == 'POST':
-        user_form = UserRegistrationForm(request.POST)
+        # Create user form and student registration form
+        user_form = UserCreationForm(request.POST)
         student_form = StudentRegistrationForm(request.POST, request.FILES)
         
         if user_form.is_valid() and student_form.is_valid():
-            # Save the user first
+            # Create the user object
             user = user_form.save()
-            
+
             # Save the student profile and associate it with the user
-            student = student_form.save(commit=False)
-            student.user = user
+            student = student_form.save(user=user, commit=False)  # Pass the user here
             student.save()
 
-            # Assign the selected course (Group) to the user
-            course = student_form.cleaned_data.get('course')
-            if course:
-                user.groups.clear()  # Clear any previous groups
-                user.groups.add(course)  # Add the selected course
-
             # Notify the user of successful registration
-            messages.success(request, 'Your account has been created! Now you can log in.')
-            return redirect('login')
+            messages.success(request, 'Your account has been created successfully!')
+
+            return redirect('login')  # Or redirect to some other page
+
         else:
-            messages.warning(request, 'Unable to create account. Please check the form.')
+            # Debugging: Print errors if forms are invalid
+            print("user_form errors:", user_form.errors)
+            print("student_form errors:", student_form.errors)
+            messages.error(request, 'Error during registration. Please check the form.')
+
     else:
-        user_form = UserRegistrationForm()
+        user_form = UserCreationForm()
         student_form = StudentRegistrationForm()
 
-    return render(request, 'users/register.html', {
+    context = {
         'user_form': user_form,
         'student_form': student_form,
-        'title': 'Student Registration'
-    })
+    }
+
+    return render(request, 'users/register.html', context)
+
 
 @login_required
 def profile(request):
