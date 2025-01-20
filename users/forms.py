@@ -24,6 +24,7 @@ class ProfileUpdateForm(forms.ModelForm):
         fields = ['image']
 
 class StudentRegistrationForm(forms.ModelForm):
+    course = forms.ModelChoiceField(queryset=Group.objects.all(), required=False)
     date_of_birth = forms.DateField(
         input_formats=['%d/%m/%Y'],
         widget=forms.TextInput(attrs={'placeholder': 'DD/MM/YYYY'}),
@@ -45,3 +46,17 @@ class StudentRegistrationForm(forms.ModelForm):
         if date_of_birth and date_of_birth > datetime.today().date():
             raise forms.ValidationError("Date of birth cannot be in the future.")
         return date_of_birth
+
+    def save(self, user, commit=True):
+        student = super().save(commit=False)
+        student.user = user
+
+        if commit:
+            student.save()
+
+        course = self.cleaned_data.get('course')
+        if course:
+            user.groups.clear()
+            user.groups.add(course)
+
+        return student

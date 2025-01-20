@@ -2,15 +2,10 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="content-section">
-    <h2 class="account-heading">{{ user.username }}</h2>
+    <h2 class="account-heading">{{ user.student_profile }}</h2>
+    <p class="text-secondary">Username: {{ user.username }}</p>
     <p class="text-secondary">Email: {{ user.email }}</p>
-    <p class="text-secondary">Course: 
-        {% if user.groups.all %}
-            {{ user.groups.first.name }}
-        {% else %}
-            Not assigned
-        {% endif %}
-    </p>
+    <p class="text-secondary">Course: {{ user.groups.first.name|default:"Not assigned" }}</p>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <fieldset class="form-group">
