@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.urls import reverse
 from django import forms
 from django.core.validators import EmailValidator
@@ -49,6 +50,17 @@ class Module(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.code})"
+
+class ModuleRegistration(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    module = models.ForeignKey(Module, on_delete=models.CASCADE)
+    date_registered = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'module')  # Ensure one registration per student per module
+
+    def __str__(self):
+        return f"{self.user.username} - {self.module.name}"
 
 # Student Model
 class Student(models.Model):

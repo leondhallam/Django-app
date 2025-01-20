@@ -1,0 +1,21 @@
+{% extends 'itreporting/base.html' %}
+
+{% block content %}
+  <h1>{{ module.name }}</h1>
+  <p><strong>Code:</strong> {{ module.code }}</p>
+  <p><strong>Credits:</strong> {{ module.credit }}</p>
+  <p><strong>Category:</strong> {{ module.category }}</p>
+  <p>{{ module.description }}</p>
+
+  {% if request.user in module.students.all %}
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" name="unregister">Unregister</button>
+    </form>
+  {% else %}
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" name="register">Register</button>
+    </form>
+  {% endif %}
+{% endblock %}

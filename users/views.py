@@ -1,17 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib import messages
-from .forms import UserRegistrationForm, UserUpdateForm, ProfileUpdateForm
+from .forms import UserRegistrationForm, UserUpdateForm, ProfileUpdateForm, StudentRegistrationForm
 from django.contrib.auth.decorators import login_required
 from itreporting.models import Student
-from .forms import UserRegistrationForm, StudentRegistrationForm
-from django.contrib.auth.models import User
-
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
-from .forms import StudentRegistrationForm
-from django.contrib import messages
+from itreporting.models import Module, ModuleRegistration
 
 def register(request):
     if request.method == 'POST':
@@ -94,5 +89,29 @@ def profile(request):
 
     return render(request, 'users/profile.html', context)
 
+@login_required
+def module_detail(request, module_id):
+    module = get_object_or_404(Module, id=module_id)
+    user_courses = request.user.groups.all()
 
+    if request.method == 'POST':
+        # Check if the student is part of a course allowed to register for the module
+        if any(course in user_courses for course in module.courses_allowed.all()):
+            if 'register' in request.POST:
+                # Register the student for the module
+                ModuleRegistration.objects.create(user=request.user, module=module)
+                messages.success(request, f'You have successfully registered for {module.name}')
+            elif 'unregister' in request.POST:
+                # Unregister the student
+                registration = ModuleRegistration.objects.filter(user=request.user, module=module).first()
+                if registration:
+                    registration.delete()
+                    messages.success(request, f'You have successfully unregistered from {module.name}')
+        else:
+            messages.error(request, 'You must be enrolled in a course that allows this module to register.')
+
+        return redirect('module_detail', module_id=module.id)
+
+    context = {'module': module}
+    return render(request, 'itreporting/module_detail.html', context)
 

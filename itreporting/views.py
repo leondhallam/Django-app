@@ -1,18 +1,19 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Issue
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import DeleteView
 import requests
 from .forms import ContactForm
-from .models import ContactSubmission
+from .models import ContactSubmission, Module, ModuleRegistration
 from django.core.mail import EmailMessage
+from django.contrib import messages
 
 
 def home(request):
-
     url = 'https://api.openweathermap.org/data/2.5/weather?q={},{}&units=metric&appid={}'
     cities = [('Sheffield', 'UK'), ('Melaka', 'Malaysia'), ('Bandung', 'Indonesia')]
     weather_data = []
@@ -73,6 +74,41 @@ def about(request):
 def report(request):
     daily_report = {'issues': Issue.objects.all(), 'title': 'Issues Reported'}
     return render(request, 'itreporting/report.html', daily_report)
+
+def modules(request):
+    modules = Module.objects.all()
+
+    context = {
+        'modules': modules,
+    }
+
+    return render(request, 'itreporting/modules.html', context)
+
+@login_required
+def module_detail(request, module_id):
+    module = get_object_or_404(Module, id=module_id)
+    user_courses = request.user.groups.all()
+
+    if request.method == 'POST':
+        if any(course in user_courses for course in module.courses_allowed.all()):
+            if 'register' in request.POST:
+                ModuleRegistration.objects.create(user=request.user, module=module)
+                messages.success(request, f'You have successfully registered for {module.name}')
+            elif 'unregister' in request.POST:
+                registration = ModuleRegistration.objects.filter(user=request.user, module=module).first()
+                if registration:
+                    registration.delete()
+                    messages.success(request, f'You have successfully unregistered from {module.name}')
+        else:
+            messages.error(request, 'You must be enrolled in a course that allows this module to register.')
+
+        return redirect('module_detail', module_id=module.id)
+
+    context = {'module': module}
+    return render(request, 'itreporting/module_detail.html', context)
+
+
+
 
 class PostListView(ListView):
     model = Issue
