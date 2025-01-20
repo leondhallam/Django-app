@@ -87,24 +87,28 @@ def modules(request):
 @login_required
 def module_detail(request, module_id):
     module = get_object_or_404(Module, id=module_id)
-    user_courses = request.user.groups.all()
+    student_profile = request.user.student_profile  # Access the student profile
+
+    # Check if the student is already registered for the module
+    is_registered = module in student_profile.modules.all()
 
     if request.method == 'POST':
-        if any(course in user_courses for course in module.courses_allowed.all()):
-            if 'register' in request.POST:
-                ModuleRegistration.objects.create(user=request.user, module=module)
-                messages.success(request, f'You have successfully registered for {module.name}')
-            elif 'unregister' in request.POST:
-                registration = ModuleRegistration.objects.filter(user=request.user, module=module).first()
-                if registration:
-                    registration.delete()
-                    messages.success(request, f'You have successfully unregistered from {module.name}')
+        if is_registered:
+            # Unregister the student from the module
+            student_profile.modules.remove(module)
+            messages.success(request, f'You have unregistered from {module.name}.')
         else:
-            messages.error(request, 'You must be enrolled in a course that allows this module to register.')
+            # Register the student for the module
+            student_profile.modules.add(module)
+            messages.success(request, f'You have registered for {module.name}.')
 
         return redirect('module_detail', module_id=module.id)
 
-    context = {'module': module}
+    context = {
+        'module': module,
+        'is_registered': is_registered,  # Track if the student is registered
+    }
+
     return render(request, 'itreporting/module_detail.html', context)
 
 

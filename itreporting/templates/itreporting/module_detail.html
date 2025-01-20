@@ -1,21 +1,18 @@
 {% extends 'itreporting/base.html' %}
 
 {% block content %}
-  <h1>{{ module.name }}</h1>
-  <p><strong>Code:</strong> {{ module.code }}</p>
-  <p><strong>Credits:</strong> {{ module.credit }}</p>
-  <p><strong>Category:</strong> {{ module.category }}</p>
+  <h1>{{ module.name }} - {{ module.code }}</h1>
   <p>{{ module.description }}</p>
+  <p>Category: {{ module.category }}</p>
+  <p>Credits: {{ module.credit }}</p>
+  <p>Available: {% if module.availability %}Yes{% else %}No{% endif %}</p>
 
-  {% if request.user in module.students.all %}
-    <form method="POST">
-      {% csrf_token %}
-      <button type="submit" name="unregister">Unregister</button>
-    </form>
-  {% else %}
-    <form method="POST">
-      {% csrf_token %}
-      <button type="submit" name="register">Register</button>
-    </form>
-  {% endif %}
+  <form method="POST">
+    {% csrf_token %}
+    {% if is_registered %}
+      <button type="submit">Unregister</button>
+    {% else %}
+      <button type="submit">Register</button>
+    {% endif %}
+  </form>
 {% endblock %}

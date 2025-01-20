@@ -47,44 +47,34 @@ def register(request):
 
 @login_required
 def profile(request):
-    if hasattr(request.user, 'student_profile'):
-        p_form = StudentRegistrationForm(request.POST, request.FILES, instance=request.user.student_profile)
-    else:
-        p_form = StudentRegistrationForm(request.POST, request.FILES)
+    # Get the user profile
+    user = request.user
+    student_profile = user.student_profile  # Assuming student profile is related to the User model
 
-    u_form = UserUpdateForm(request.POST, instance=request.user)
+    # Fetch the modules that the student is registered for
+    registered_modules = student_profile.modules.all()
 
     if request.method == 'POST':
+        # Handle form submissions if needed (user and student profile update)
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = StudentRegistrationForm(request.POST, request.FILES, instance=request.user.student_profile)
+
         if u_form.is_valid() and p_form.is_valid():
-            print("Selected course:", p_form.cleaned_data.get('course')) #Debugging
             u_form.save()
-
-            student = p_form.save(user=request.user, commit=False)
-
+            student = p_form.save(commit=False)
+            student.user = request.user
             student.save()
-
-            course = p_form.cleaned_data.get('course')
-            if course:
-                request.user.groups.clear()
-                request.user.groups.add(course)
-                print("User groups after update:", request.user.groups.all())
-            else:
-                request.user.groups.clear()
-
-            messages.success(request, 'Your profile has been updated!')
+            # Handle course selection logic here (if needed)
             return redirect('profile')
-        else:
-            print("u_form errors:", u_form.errors)
-            print("p_form errors:", p_form.errors)
-            messages.error(request, 'Error updating your profile. Please check the form.')
     else:
+        # Initialize the forms
         u_form = UserUpdateForm(instance=request.user)
         p_form = StudentRegistrationForm(instance=request.user.student_profile)
-        p_form.fields['course'].initial = request.user.groups.first()
 
     context = {
         'u_form': u_form,
         'p_form': p_form,
+        'registered_modules': registered_modules,  # Pass the registered modules to the template
     }
 
     return render(request, 'users/profile.html', context)
