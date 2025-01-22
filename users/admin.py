@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Profile
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from itreporting.models import Student, Module
+from itreporting.models import Student
 
 admin.site.register(Profile)
 

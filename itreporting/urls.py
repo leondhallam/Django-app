@@ -17,7 +17,6 @@ urlpatterns = [
     path('issues/<int:pk>/delete/', PostDeleteView.as_view(), name = 'issue-delete'),
     path('modules/', views.modules, name='modules'),
     path('module/<int:module_id>/', views.module_detail, name='module_detail'),
-    #path('modules/<int:pk>/', views.module_detail, name='module_detail'),
 ]
 
 if settings.DEBUG:

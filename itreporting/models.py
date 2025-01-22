@@ -3,7 +3,6 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.urls import reverse
-from django import forms
 from django.core.validators import EmailValidator
 from django.contrib.auth.models import User, Group
 
@@ -57,7 +56,7 @@ class ModuleRegistration(models.Model):
     date_registered = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'module')  # Ensure one registration per student per module
+        unique_together = ('user', 'module')
 
     def __str__(self):
         return f"{self.user.username} - {self.module.name}"

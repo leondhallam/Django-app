@@ -1,12 +1,8 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import UserRegistrationForm, UserUpdateForm, ProfileUpdateForm, StudentRegistrationForm
+from .forms import UserUpdateForm, StudentRegistrationForm
 from django.contrib.auth.decorators import login_required
-from itreporting.models import Student
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from itreporting.models import Module, ModuleRegistration
 
 def register(request):
     if request.method == 'POST':
@@ -61,13 +57,12 @@ def profile(request):
         u_form = UserUpdateForm(instance=request.user)
         p_form = StudentRegistrationForm(instance=request.user.student_profile)
 
-    # Retrieve the modules the user is registered for
     student_modules = request.user.student_profile.modules.all()
 
     context = {
         'u_form': u_form,
         'p_form': p_form,
-        'student_modules': student_modules,  # Add the registered modules to the context
+        'student_modules': student_modules,
     }
 
     return render(request, 'users/profile.html', context)

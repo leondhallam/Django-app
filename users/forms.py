@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from .models import Profile
-from django.core.validators import EmailValidator
 from itreporting.models import Student
 from datetime import datetime
 
@@ -38,7 +37,7 @@ class StudentRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = Student
-        fields = ['date_of_birth', 'address', 'city_town', 'country', 'photo', 'course']  # Include 'course' field in Meta
+        fields = ['date_of_birth', 'address', 'city_town', 'country', 'photo', 'course']
 
     def clean_date_of_birth(self):
         date_of_birth = self.cleaned_data.get('date_of_birth')
@@ -47,24 +46,21 @@ class StudentRegistrationForm(forms.ModelForm):
         return date_of_birth
 
     def save(self, user=None, commit=True):
-        # Save the student profile
         student = super().save(commit=False)
         
         if user:
-            student.user = user  # Associate the student profile with the user
+            student.user = user
 
         if commit:
             student.save()
 
-        # Save the course (only if it's selected)
         course = self.cleaned_data.get('course')
         if course:
-            student.course = course  # Assign course to student profile
+            student.course = course
             student.save()
 
-            # Also update the user’s groups (course)
-            user.groups.clear()  # Remove any existing course associations
-            user.groups.add(course)  # Add the new course
+            user.groups.clear()
+            user.groups.add(course)
 
         return student
 

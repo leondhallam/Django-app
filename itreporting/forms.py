@@ -1,17 +1,6 @@
-# from django import forms
-# from .models import Contact
-
-# class ContactForm(forms.ModelForm):
-#     class Meta:
-#         model = Contact
-#         fields = ['name', 'email', 'subject', 'message', 'address']
-
 from django import forms
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Field, Div, Row, Column
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Contact
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(label='Email address', help_text='Your SHU email address.')

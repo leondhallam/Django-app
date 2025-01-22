@@ -4,8 +4,6 @@ from .models import Issue, ContactSubmission, Student, Module, Registration
 # Register your models here.
 admin.site.register(Issue)
 
-# admin.site.register(Contact)
-
 @admin.register(ContactSubmission)
 class ContactSubmissionAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'subject', 'submitted_at')
