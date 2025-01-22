@@ -8,7 +8,7 @@
     {% for module in modules %}
       {% if module in request.user.student_profile.modules.all %}
         <li>
-          {{ module.name }} - {{ module.code }}
+          <a href="{% url 'module_detail' module.pk %}">{{ module.name }} - {{ module.code }} </a>
           <form method="POST" action="{% url 'module_detail' module.id %}">
             {% csrf_token %}
             <button type="submit">Unregister</button>
@@ -23,7 +23,7 @@
     {% for module in modules %}
       {% if module not in request.user.student_profile.modules.all %}
         <li>
-          {{ module.name }} - {{ module.code }}
+          <a href="{% url 'module_detail' module.pk %}">{{ module.name }} - {{ module.code }} </a>
           <form method="POST" action="{% url 'module_detail' module.id %}">
             {% csrf_token %}
             <button type="submit">Register</button>
