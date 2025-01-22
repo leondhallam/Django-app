@@ -70,6 +70,7 @@ class Student(models.Model):
     city_town = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
     photo = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+    course = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True, related_name='students')
     modules = models.ManyToManyField(Module, related_name="students_registered", blank=True)
 
     def __str__(self):
