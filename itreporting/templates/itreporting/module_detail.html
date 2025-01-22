@@ -3,16 +3,27 @@
 {% block content %}
   <h1>{{ module.name }} - {{ module.code }}</h1>
   <p>{{ module.description }}</p>
-  <p>Category: {{ module.category }}</p>
-  <p>Credits: {{ module.credit }}</p>
-  <p>Available: {% if module.availability %}Yes{% else %}No{% endif %}</p>
+  <p><strong>Category:</strong> {{ module.category }}</p>
+  <p><strong>Credits:</strong> {{ module.credit }}</p>
+  <p><strong>Available:</strong> {% if module.availability %}Yes{% else %}No{% endif %}</p>
 
-  <form method="POST">
-    {% csrf_token %}
-    {% if is_registered %}
-      <button type="submit">Unregister</button>
-    {% else %}
-      <button type="submit">Register</button>
-    {% endif %}
-  </form>
+  <p><strong>Courses Allowed To Register:</strong></p>
+  <ul>
+    {% for course in module.courses_allowed.all %}
+      <li>{{ course.name }}</li>
+    {% empty %}
+      <li>No courses are allowed to register for this module.</li>
+    {% endfor %}
+  </ul>
+
+  <p>
+    <form method="POST">
+      {% csrf_token %}
+      {% if is_registered %}
+        <button type="submit">Unregister</button>
+      {% else %}
+        <button type="submit">Register</button>
+      {% endif %}
+    </form>
+  </p>
 {% endblock %}
