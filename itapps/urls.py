@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from users import views
-from itreporting.views import module_detail
+from itreporting.views import modules, module_detail
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -29,6 +29,8 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
     path('profile/', views.profile, name="profile"),
+
+    path('modules/', modules, name='modules'),
     path('module/<int:module_id>/', module_detail, name='module_detail'),
 ]
 

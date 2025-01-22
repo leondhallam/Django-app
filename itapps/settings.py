@@ -159,6 +159,10 @@ STORAGES = {
     },
 }
 
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Your local static directory
+]
+
 STATIC_URL = f'https://{AZURE_SA_NAME}.blob.core.windows.net/static/'
 MEDIA_URL = f'https://{AZURE_SA_NAME}.blob.core.windows.net/media/'
 

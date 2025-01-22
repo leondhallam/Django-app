@@ -10,7 +10,7 @@
           <a href="{% url 'module_detail' module.id %}">{{ module.name }} - {{ module.code }}</a>
           <form method="POST" action="{% url 'module_detail' module.id %}">
             {% csrf_token %}
-            <button type="submit">Unregister</button>
+            <button class="btn btn-primary" type="submit">Unregister</button>
           </form>
         </li>
       {% endif %}
@@ -25,7 +25,7 @@
           <a href="{% url 'module_detail' module.id %}">{{ module.name }} - {{ module.code }}</a>
           <form method="POST" action="{% url 'module_detail' module.id %}">
             {% csrf_token %}
-            <button type="submit">Register</button>
+            <button class="btn btn-primary" type="submit">Register</button>
           </form>
         </li>
       {% endif %}

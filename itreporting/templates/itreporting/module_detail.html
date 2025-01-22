@@ -1,12 +1,13 @@
 {% extends 'itreporting/base.html' %}
 
 {% block content %}
-  <h1>{{ module.name }}</h1>
-  <p>Category: {{ module.category }}</p>
-  <p>Credits: {{ module.credit }}</p>
-  <p>Availability: {% if module.availability %} Available {% else %} Not Available {% endif %}</p>
+  <h1>{{ module.name }} - {{ module.code }}</h1>
+  <p><strong>Credits:</strong> {{ module.credit }}</p>
+  <p><strong>Category:</strong> {{ module.category }}</p>
+  <p><strong>Description:</strong> {{ module.description }}</p>
+  <p><strong>Availability:</strong> {% if module.availability %} Available {% else %} Not Available {% endif %}</p>
 
-  <p>Courses Allowed To Register: 
+  <p><strong>Courses Allowed To Register:</strong> 
     {% for course in module.courses_allowed.all %}
         {{ course.name }}{% if not forloop.last %}, {% endif %}
     {% endfor %}
@@ -15,12 +16,14 @@
   {% if is_registered %}
       <form method="POST">
           {% csrf_token %}
-          <button type="submit">Unregister</button>
+          <button class="btn btn-primary" type="submit">Unregister</button>
       </form>
   {% else %}
       <form method="POST">
           {% csrf_token %}
-          <button type="submit">Register</button>
+          <button class="btn btn-primary" type="submit">Register</button>
       </form>
   {% endif %}
+
+  <p><p><a class="btn btn-primary" href="/modules">Modules</a></p></p>
 {% endblock %}

@@ -28,7 +28,7 @@ def home(request):
         weather_data.append(weather)
     return render(request, 'itreporting/home.html', {'title': 'Homepage', 'weather_data': weather_data})
 
-
+@login_required
 def contact(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
@@ -58,10 +58,12 @@ def contact(request):
 def about(request):
     return render(request, 'itreporting/about.html', {'title': 'About Us'})
 
+@login_required
 def report(request):
     daily_report = {'issues': Issue.objects.all(), 'title': 'Issues Reported'}
     return render(request, 'itreporting/report.html', daily_report)
 
+@login_required
 def modules(request):
     modules = Module.objects.all()
 
