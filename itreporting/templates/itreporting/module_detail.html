@@ -1,29 +1,26 @@
 {% extends 'itreporting/base.html' %}
 
 {% block content %}
-  <h1>{{ module.name }} - {{ module.code }}</h1>
-  <p>{{ module.description }}</p>
-  <p><strong>Category:</strong> {{ module.category }}</p>
-  <p><strong>Credits:</strong> {{ module.credit }}</p>
-  <p><strong>Available:</strong> {% if module.availability %}Yes{% else %}No{% endif %}</p>
+  <h1>{{ module.name }}</h1>
+  <p>Category: {{ module.category }}</p>
+  <p>Credits: {{ module.credit }}</p>
+  <p>Availability: {% if module.availability %} Available {% else %} Not Available {% endif %}</p>
 
-  <p><strong>Courses Allowed To Register:</strong></p>
-  <ul>
+  <p>Courses Allowed To Register: 
     {% for course in module.courses_allowed.all %}
-      <li>{{ course.name }}</li>
-    {% empty %}
-      <li>No courses are allowed to register for this module.</li>
+        {{ course.name }}{% if not forloop.last %}, {% endif %}
     {% endfor %}
-  </ul>
-
-  <p>
-    <form method="POST">
-      {% csrf_token %}
-      {% if is_registered %}
-        <button type="submit">Unregister</button>
-      {% else %}
-        <button type="submit">Register</button>
-      {% endif %}
-    </form>
   </p>
+
+  {% if is_registered %}
+      <form method="POST">
+          {% csrf_token %}
+          <button type="submit">Unregister</button>
+      </form>
+  {% else %}
+      <form method="POST">
+          {% csrf_token %}
+          <button type="submit">Register</button>
+      </form>
+  {% endif %}
 {% endblock %}

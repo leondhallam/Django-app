@@ -86,29 +86,30 @@ def modules(request):
 
 @login_required
 def module_detail(request, module_id):
-    module = get_object_or_404(Module, id=module_id)
-    student_profile = request.user.student_profile  # Access the student profile
+    module = Module.objects.get(id=module_id)
+    student_profile = request.user.student_profile
 
-    # Check if the student is already registered for the module
-    is_registered = module in student_profile.modules.all()
+    # Check if the student is registered for this module already
+    is_registered = student_profile.modules.filter(id=module.id).exists()
 
+    # Check if the student’s course is allowed to register for this module
     if request.method == 'POST':
-        if is_registered:
-            # Unregister the student from the module
-            student_profile.modules.remove(module)
-            messages.success(request, f'You have unregistered from {module.name}.')
+        if module.courses_allowed.filter(id=student_profile.course.id).exists():
+            if is_registered:
+                # Unregister if already registered
+                student_profile.modules.remove(module)
+                messages.success(request, f'You have unregistered from {module.name}.')
+            else:
+                # Register if not already registered
+                student_profile.modules.add(module)
+                messages.success(request, f'You have registered for {module.name}.')
         else:
-            # Register the student for the module
-            student_profile.modules.add(module)
-            messages.success(request, f'You have registered for {module.name}.')
-
-        return redirect('module_detail', module_id=module.id)
+            messages.error(request, 'You cannot register for this module because it is not available for your course.')
 
     context = {
         'module': module,
-        'is_registered': is_registered,  # Track if the student is registered
+        'is_registered': is_registered,
     }
-
     return render(request, 'itreporting/module_detail.html', context)
 
 

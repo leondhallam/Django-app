@@ -39,56 +39,40 @@ def register(request):
 
     return render(request, 'users/register.html', context)
 
-
 @login_required
 def profile(request):
-    user = request.user
-    student_profile = user.student_profile
-
-    registered_modules = student_profile.modules.all()
-
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = StudentRegistrationForm(request.POST, request.FILES, instance=request.user.student_profile)
 
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
-            student = p_form.save(commit=False)
+            student = p_form.save(user=request.user, commit=False)
             student.user = request.user
             student.save()
+
+            messages.success(request, 'Your profile has been updated!')
             return redirect('profile')
+        else:
+            print("u_form errors:", u_form.errors)
+            print("p_form errors:", p_form.errors)
+            messages.error(request, 'Error updating your profile. Please check the form.')
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = StudentRegistrationForm(instance=request.user.student_profile)
 
+    # Retrieve the modules the user is registered for
+    student_modules = request.user.student_profile.modules.all()
+
     context = {
         'u_form': u_form,
         'p_form': p_form,
-        'registered_modules': registered_modules,
+        'student_modules': student_modules,  # Add the registered modules to the context
     }
 
     return render(request, 'users/profile.html', context)
 
-@login_required
-def module_detail(request, module_id):
-    module = get_object_or_404(Module, id=module_id)
-    user_courses = request.user.groups.all()
 
-    if request.method == 'POST':
-        if any(course in user_courses for course in module.courses_allowed.all()):
-            if 'register' in request.POST:
-                ModuleRegistration.objects.create(user=request.user, module=module)
-                messages.success(request, f'You have successfully registered for {module.name}')
-            elif 'unregister' in request.POST:
-                registration = ModuleRegistration.objects.filter(user=request.user, module=module).first()
-                if registration:
-                    registration.delete()
-                    messages.success(request, f'You have successfully unregistered from {module.name}')
-        else:
-            messages.error(request, 'You must be enrolled in a course that allows this module to register.')
 
-        return redirect('module_detail', module_id=module.id)
 
-    context = {'module': module}
-    return render(request, 'itreporting/module_detail.html', context)
 

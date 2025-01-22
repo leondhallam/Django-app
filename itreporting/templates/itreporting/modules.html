@@ -1,14 +1,13 @@
 {% extends 'itreporting/base.html' %}
 
 {% block content %}
-  <h1>Available Modules</h1>
 
   <h2>Registered Modules</h2>
   <ul>
     {% for module in modules %}
       {% if module in request.user.student_profile.modules.all %}
         <li>
-          <a href="{% url 'module_detail' module.pk %}">{{ module.name }} - {{ module.code }} </a>
+          <a href="{% url 'module_detail' module.id %}">{{ module.name }} - {{ module.code }}</a>
           <form method="POST" action="{% url 'module_detail' module.id %}">
             {% csrf_token %}
             <button type="submit">Unregister</button>
@@ -23,7 +22,7 @@
     {% for module in modules %}
       {% if module not in request.user.student_profile.modules.all %}
         <li>
-          <a href="{% url 'module_detail' module.pk %}">{{ module.name }} - {{ module.code }} </a>
+          <a href="{% url 'module_detail' module.id %}">{{ module.name }} - {{ module.code }}</a>
           <form method="POST" action="{% url 'module_detail' module.id %}">
             {% csrf_token %}
             <button type="submit">Register</button>

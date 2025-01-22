@@ -7,10 +7,10 @@
     <p class="text-secondary">Email: {{ user.email }}</p>
     <p class="text-secondary">Course: {{ user.groups.first.name|default:"Not assigned" }}</p>
     <h2>Registered Modules</h2>
-    {% if registered_modules %}
+    {% if student_modules %}
       <ul>
-        {% for module in registered_modules %}
-          <li>{{ module.name }} - {{ module.code }}</li>
+        {% for module in student_modules %}
+            <li>{{ module.name }} - {{ module.code }}</li>
         {% endfor %}
       </ul>
     {% else %}
